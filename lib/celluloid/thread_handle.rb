@@ -7,10 +7,13 @@ module Celluloid
   class ThreadHandle
     extend Forwardable
     def_delegators :@thread, :backtrace
+    # Provide hash storage for compatibility with obj.thread[]
+    def_delegators :@params, :[], :[]=
 
     def initialize
       @mutex = Mutex.new
       @join  = ConditionVariable.new
+      @params = Hash.new
 
       @thread = InternalPool.get do
         begin
